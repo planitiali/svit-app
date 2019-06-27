@@ -1,0 +1,56 @@
+/**
+ * City A has following four types of items: 
+ *  1. domestic BFM (TYPE_BFM) books, food and medical products
+ *  2. imported BFM (TYPE_BFM_IMPORT) 
+ *  3. domestic other goods (TYPE_OTHER_GOODS) all goods, except boos, food, and medical products
+ *  4. imported other goods (TYPE_OTHER_GOODS_IMPORT) 
+ * 
+ * And each item category has following tax regulation: 
+ * 	1. BFM has NO local sale tax
+ * 	2. other goods has 10% sale tax based on sale price
+ * 	3. Each imported item has 5% import tax based on sale price
+ * 
+ * 
+ *  == Question 1 
+ * 
+ * Thinking in Java with OOP, design a SALES TAXES and SHOPPING CART solution.  
+ * Calculate and print total tax and total price for each input of items.  
+ * for examples:
+ * 
+ *  INPUT 1: 
+ *  [type definition]  [category]  [quantity] [list price]	
+ *  TYPE_BFM, "book", 1, 12.49
+ *	TYPE_BFM, "chocolate bar", 1, 0.85
+ *	TYPE_OTHER_GOODS, "music CD", 1, 14.99
+ *  
+ *  input 1 expected total tax:$1.50; expected total: $29.83
+ *  
+ *  
+ *  INPUT 2:
+ *  [type definition]  [category]  [quantity] [list price]	
+ *  TYPE_BFM_IMPORT, "imported box of chocolates", 1, 10.00
+ *	TYPE_OTHER_GOODS_IMPORT, "imported bottle of perfume", 1, 20.00
+ *  
+ *  input 2 expected total tax:$3.50; expected total: $33.50
+ *  
+ *  
+ *  INPUT 3:
+ *  [type definition]  [category]  [quantity] [list price]	
+ * 	TYPE_BFM, "packet of headache pills", 1, 9.75
+ * 	TYPE_BFM_IMPORT, "box of imported chocolates", 1, 11.25
+ *	TYPE_OTHER_GOODS, "bottle of perfume", 1, 18.99
+ *  TYPE_OTHER_GOODS_IMPORT, "imported bottle of perfume", 1, 27.99
+ *  
+ *  input 3 expected total tax:$6.67; expected total: $74.64
+ * 
+ *  == Question 2
+ *  refactor the code to remove abstract class goods
+ * 
+ * 
+ * 
+ *  Code is for studying purpose, not for commercial use.
+ * 	copyright of sv-it.org
+ * 
+ * @author sv-it.org
+ *
+ */

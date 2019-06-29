@@ -17,6 +17,17 @@ package com.svit.java.p1;
  * custom exception 
  */
 class ItemException extends Exception{
+	
+	private static final long serialVersionUID = 1L;
+	private String message;
+	
+	ItemException(String s){
+		message = s;
+	}
+	
+	public String toString() {
+		return "ItemExecption[" + message + "]";
+	}
 
 }
 

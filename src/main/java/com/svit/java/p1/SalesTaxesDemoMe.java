@@ -9,15 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.svit.java.p2.BFM;
-import com.svit.java.p2.Goods;
-import com.svit.java.p2.Item;
-import com.svit.java.p2.ItemException;
-import com.svit.java.p2.ItemsFactory;
-import com.svit.java.p2.OtherGoods;
-import com.svit.java.p2.ShoppingCartBuilder;
-import com.svit.java.p2.ShoppingCartBuilderImp;
-import com.svit.java.p2.Tax;
 
 /**
  * Code is for study and personal use purpose, not for commercial use.
@@ -241,6 +232,84 @@ class ShoppingCartBuilderImp implements ShoppingCartBuilder{
 		
 		items.add(item);
 	}
+
+	public void buildShoppingCart(int itemType, String description, int quantity, double price) throws ItemException{
+		ItemsFactory itemsFactory = new ItemsFactoryImp();
+		Item item = itemsFactory.getItem(itemType, description, quantity, price);
+		this.addItem(item);
+	}
+	
+	public double calculateCartTotalTax() throws ItemException{
+		double totalTax = 0.0;
+		
+		if (items == null)
+			throw new ItemException("Shopping cart is empty");
+		
+		Iterator<Item> itemItr = items.iterator();
+		
+		while(itemItr.hasNext()){
+			Item item = (Item)itemItr.next();
+			totalTax += item.getGoodsTotalTax();	
+		}
+		
+		return totalTax;
+	}
+	
+	public double calculateCartGrandTotal() throws ItemException{
+		double total = 0.0;
+		
+		if (items == null)
+			throw new ItemException("Shopping cart is empty");	
+		
+		Iterator<Item> itemItr = items.iterator();
+		
+		while(itemItr.hasNext()){
+			Item item = (Item)itemItr.next();
+			total += item.getGoodsTotal();	
+		}	
+		
+		return total;
+	}
+	
+	
+	public void printExtendedTaxedPrice() throws ItemException{
+		if (items == null)
+			throw new ItemException("Shopping cart is empty");
+			
+		Iterator<Item> itemItr = items.iterator();
+		
+		while(itemItr.hasNext()){
+			Item item = (Item)itemItr.next();
+
+			//output formatted value
+			NumberFormat f = new DecimalFormat("0.00");
+			System.out.println(item + " $" + f.format(item.getGoodsTotal()));
+		}
+	}
+	
+	public Iterator<Item> getIterator(){
+		return items.iterator();
+	}
+	
+	public void clearCart(){
+		if (items != null)
+			items.clear();	
+	}
+	
+	
+    public String toString() {
+		NumberFormat f = new DecimalFormat("0.00");
+		double totalTax = 0.0;
+		double total = 0.0;
+		try {
+			totalTax = this.calculateCartTotalTax();
+			total = this.calculateCartGrandTotal();
+		} catch (ItemException e) {
+			e.printStackTrace();
+		}
+    	
+    	return "\nSales Taxes: " + f.format(totalTax) + "\n" + "Grand Total:" + f.format(total);
+    }
 
 }
 /*

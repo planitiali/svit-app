@@ -105,13 +105,16 @@ abstract class Goods implements Item{
 	protected abstract boolean isImported();
 	
 	public double getGoodsTotalTax(){
-		//TODO
-		return 0.0;//placeholder
+		tax.calculateItemTax(isTaxable(), isImported(), price);
+		
+		return quantity * this.tax.calculatedItemTaxRate();
 	}
 	
 	public double getGoodsTotal() throws ItemException{
-		//TODO
-		return 0.0;//placeholder
+		if(tax==null)
+			throw new ItemException("Tax should be calculated first!");
+		
+		return quantity * (this.tax.calculatedItemTaxRate() + price);
 	}
 	
 	public String getDescription(){

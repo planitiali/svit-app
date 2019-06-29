@@ -3,6 +3,18 @@
  */
 package com.svit.java.p1;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.svit.java.p2.BFM;
+import com.svit.java.p2.Goods;
+import com.svit.java.p2.Item;
+import com.svit.java.p2.ItemException;
+import com.svit.java.p2.ItemsFactory;
+import com.svit.java.p2.OtherGoods;
+import com.svit.java.p2.ShoppingCartBuilder;
+import com.svit.java.p2.Tax;
 
 /**
  * Code is for study and personal use purpose, not for commercial use.
@@ -18,6 +30,20 @@ package com.svit.java.p1;
  */
 class ItemException extends Exception{
 
+	private static final long serialVersionUID = 1L;
+	private String message;
+	
+	ItemException(String s){
+		message = s;	
+	}	
+	
+	ItemException(String s, String t){
+		message = s;	
+	}	
+	
+	public String toString(){
+		return "ItemException[" + message + "]";	
+	}
 }
 
 /*
@@ -30,7 +56,27 @@ class Tax{
 	private double saleTax = 0.0;
 	private double importTax = 0.0;
 	
-
+	/*
+	 * calculate item sale tax and import tax
+	 */
+	public void calculateItemTax(boolean isTaxable, boolean isImported, double price){
+		if (isTaxable){
+			saleTax = price*SALE_TAX;
+		}	
+		
+		if (isImported){
+			importTax = price*IMPORT_TAX;	
+		}
+	}
+	
+	/*
+	 * calculate total item tax
+	 */
+	public double calculateItemTaxRate(){
+		//Use ceil(double/0.05 )*0.05 to round the sales tax up to the nearest 0.05
+		//return Math.ceil((this.saleTax + this.importTax)/0.05 )*0.05;
+		return this.saleTax + this.importTax;
+	}	
 }
 
 /*
@@ -68,13 +114,15 @@ abstract class Goods implements Item{
 	protected abstract boolean isImported();
 	
 	public double getGoodsTotalTax(){
-		//TODO
-		return 0.0;//placeholder
+		tax.calculateItemTax(isTaxable(), isImported(), price);
+		return quantity * this.tax.calculateItemTaxRate();	
 	}
 	
 	public double getGoodsTotal() throws ItemException{
-		//TODO
-		return 0.0;//placeholder
+		if(tax==null)	
+			throw new ItemException("Tax should be calculated first!");
+			
+		return quantity * (this.tax.calculateItemTaxRate() + price);
 	}
 	
 	public String getDescription(){
@@ -85,7 +133,6 @@ abstract class Goods implements Item{
 		return (quantity + " " + description + ": ");	
 	}
 }
-
 
 /*
  * BFM(book, food, medical)
@@ -153,12 +200,46 @@ class ItemsFactoryImp implements ItemsFactory{
 		Item item = null;
 		
 		//apply factory design pattern
-
+		if(itemType == Item.TYPE_BFM){
+			item = new BFM(description, quantity, price);	
+		} else if(itemType == Item.TYPE_BFM_IMPORT){
+			item = new BFM(description, quantity, price);
+			item.setImported(true);
+		}else if(itemType == Item.TYPE_OTHER_GOODS){
+			item = new OtherGoods(description, quantity, price);	
+		} else if(itemType == Item.TYPE_OTHER_GOODS_IMPORT){
+			item = new OtherGoods(description, quantity, price);
+			item.setImported(true);	
+		} else
+			throw new ItemException("itemType : " + itemType + " is invalid.");
 			
 		return item;
 	}
 }
 
+/*
+ * Build shopping cart
+ */
+interface ShoppingCartBuilder{
+	public void buildShoppingCart(int itemType, String description, int quantity, double price) throws ItemException;
+	public double calculateCartTotalTax() throws ItemException;
+	public double calculateCartGrandTotal() throws ItemException;
+	public void printExtendedTaxedPrice() throws ItemException;
+	public Iterator<Item> getIterator();
+	public void clearCart();
+}
+
+class ShoppingCartBuilderImp implements ShoppingCartBuilder{
+	private List<Item> items = null;
+	
+	private void addItem(Item item){
+		if (items == null)
+			items = new ArrayList<Item>();
+		
+		items.add(item);
+	}
+
+}
 /*
  * main function to simulate SALES TAXES OO solution
  */

@@ -30,6 +30,32 @@ class Tax{
 	private double saleTax = 0.0;
 	private double importTax = 0.0;
 	
+	/*
+	 * calculate item sale tax and import tax
+	 */
+	
+	public void calculateItemTax(boolean isTaxable, boolean isImported, double price) {
+		
+		if(isTaxable) {
+			saleTax = price*SALE_TAX;
+		}
+		if(isImported) {
+			importTax = price*IMPORT_TAX;
+			
+		}
+		
+	}
+	
+	/*
+	 *  calculate total item tax
+	 */
+	
+	public double calculatedItemTaxRate() {
+		return this.saleTax + this.importTax;
+		
+	}
+	
+	
 
 }
 

@@ -193,6 +193,23 @@ class ItemsFactoryImp implements ItemsFactory{
 		Item item = null;
 		
 		//apply factory design pattern
+		if(itemType == Item.TYPE_BFM) {
+			item = new BFM(description, quantity, price);	
+		}
+		else if(itemType == Item.TYPE_BFM_IMPORT) {
+			item = new BFM(description, quantity, price);
+			item.setImported(true);
+		}
+		else if(itemType == Item.TYPE_OTHER_GOODS) {
+			item = new OtherGoods(description, quantity, price);	
+		}
+		else if(itemType == Item.TYPE_OTHER_GOODS_IMPORT) {
+			item = new OtherGoods(description, quantity, price);
+			item.setImported(true);
+		}else
+			throw new ItemException("itemType : " + itemType + " is invalid.");
+		
+		
 
 			
 		return item;

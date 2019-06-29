@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 /**
  * Code is for study and personal use purpose, not for commercial use.
  * 
@@ -110,14 +111,14 @@ abstract class Goods implements Item{
 		tax.calculateItemTax(isTaxable(), isImported(), price);
 
 		
-		return quantity * this.tax.calculatedItemTaxRate();
+		return quantity * this.tax.calculateItemTaxRate();
 	}
 	
 	public double getGoodsTotal() throws ItemException{
 		if(tax==null)
 			throw new ItemException("Tax should be calculated first!");
 		
-		return quantity * (this.tax.calculatedItemTaxRate() + price);
+		return quantity * (this.tax.calculateItemTaxRate() + price);
 
 	}
 	
@@ -236,50 +237,86 @@ class ShoppingCartBuilderImp implements ShoppingCartBuilder{
 		items.add(item);
 	}
 	
+
+	
+
 	public void buildShoppingCart(int itemType, String description, int quantity, double price) throws ItemException{
-		
 		ItemsFactory itemsFactory = new ItemsFactoryImp();
 		Item item = itemsFactory.getItem(itemType, description, quantity, price);
 		this.addItem(item);
-		
-		
 	}
 	
 	public double calculateCartTotalTax() throws ItemException{
 		double totalTax = 0.0;
 		
-		if(item == null)
+		if (items == null)
 			throw new ItemException("Shopping cart is empty");
 		
 		Iterator<Item> itemItr = items.iterator();
 		
-		while(itemItr.hasNext()) {
+		while(itemItr.hasNext()){
 			Item item = (Item)itemItr.next();
-			totalTax += item.getGoodsTotalTax();
+			totalTax += item.getGoodsTotalTax();	
 		}
-		return totalTax;
 		
+		return totalTax;
 	}
-	
-
 	
 	public double calculateCartGrandTotal() throws ItemException{
 		double total = 0.0;
 		
-		if(item == null)
-			throw new ItemException("Shopping cart is empty");
+		if (items == null)
+			throw new ItemException("Shopping cart is empty");	
 		
 		Iterator<Item> itemItr = items.iterator();
 		
-		while(itemItr.hasNext()) {
+		while(itemItr.hasNext()){
 			Item item = (Item)itemItr.next();
-			total += item.getGoodsTotal();
-		}
-		return total;
+			total += item.getGoodsTotal();	
+		}	
 		
-	}	
+		return total;
+	}
 	
 	
+	public void printExtendedTaxedPrice() throws ItemException{
+		if (items == null)
+			throw new ItemException("Shopping cart is empty");
+			
+		Iterator<Item> itemItr = items.iterator();
+		
+		while(itemItr.hasNext()){
+			Item item = (Item)itemItr.next();
+
+			//output formatted value
+			NumberFormat f = new DecimalFormat("0.00");
+			System.out.println(item + " $" + f.format(item.getGoodsTotal()));
+		}
+	}
+	
+	public Iterator<Item> getIterator(){
+		return items.iterator();
+	}
+	
+	public void clearCart(){
+		if (items != null)
+			items.clear();	
+	}
+	
+	
+    public String toString() {
+		NumberFormat f = new DecimalFormat("0.00");
+		double totalTax = 0.0;
+		double total = 0.0;
+		try {
+			totalTax = this.calculateCartTotalTax();
+			total = this.calculateCartGrandTotal();
+		} catch (ItemException e) {
+			e.printStackTrace();
+		}
+    	
+    	return "\nSales Taxes: " + f.format(totalTax) + "\n" + "Grand Total:" + f.format(total);
+    }
 
 }
 /*

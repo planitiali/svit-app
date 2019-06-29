@@ -3,6 +3,8 @@
  */
 package com.svit.java.p1;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,7 @@ import com.svit.java.p2.ItemException;
 import com.svit.java.p2.ItemsFactory;
 import com.svit.java.p2.OtherGoods;
 import com.svit.java.p2.ShoppingCartBuilder;
+import com.svit.java.p2.ShoppingCartBuilderImp;
 import com.svit.java.p2.Tax;
 
 /**
@@ -245,7 +248,54 @@ class ShoppingCartBuilderImp implements ShoppingCartBuilder{
  */
 public class SalesTaxesDemoMe{
 	public static void main(String[] args) throws ItemException{
-
+		//output formatted value
+		NumberFormat f = new DecimalFormat("0.00");
+					
+		//Build shopping cart
+		ShoppingCartBuilder builder = new ShoppingCartBuilderImp();
+		
+		//input 1:
+		builder.buildShoppingCart(Item.TYPE_BFM, "book", 1, 12.49);
+		builder.buildShoppingCart(Item.TYPE_BFM, "chocolate bar", 1, 0.85);
+		builder.buildShoppingCart(Item.TYPE_OTHER_GOODS, "music CD", 1, 14.99);
+		
+		//print result of input 1
+		System.out.println("\nShopping Cart input 1: ");
+		double totalTax = builder.calculateCartTotalTax();
+		builder.printExtendedTaxedPrice();
+		System.out.println("Sales Taxes: " + f.format(totalTax));
+		System.out.println("Grand Total:" + f.format(builder.calculateCartGrandTotal()));
+		
+		//Duplicate print
+		System.out.println(builder); 	// to replace above two print statement
+										//Sales Taxes: 1.50
+										// Total:29.83
+			
+		builder.clearCart();
+		
+		//input 2
+		builder.buildShoppingCart(Item.TYPE_BFM_IMPORT, "imported box of chocolates", 1, 10.00);
+		builder.buildShoppingCart(Item.TYPE_OTHER_GOODS_IMPORT, "imported bottle of perfume", 1, 20.00);
+		
+		System.out.println("\nShopping Cart input 2: ");
+		totalTax = builder.calculateCartTotalTax();
+		builder.printExtendedTaxedPrice();
+		System.out.println("Sales Taxes: " + f.format(totalTax));
+		System.out.println("Total:" + f.format(builder.calculateCartGrandTotal()));
+		
+		builder.clearCart();
+		
+		//input 3
+		builder.buildShoppingCart(Item.TYPE_BFM, "packet of headache pills", 1, 9.75);
+		builder.buildShoppingCart(Item.TYPE_BFM_IMPORT, "box of imported chocolates", 1, 11.25);
+		builder.buildShoppingCart(Item.TYPE_OTHER_GOODS, "bottle of perfume", 1, 18.99);
+		builder.buildShoppingCart(Item.TYPE_OTHER_GOODS_IMPORT, "imported bottle of perfume", 1, 27.99);
+		
+		System.out.println("\nShopping Cart input 3: ");
+		totalTax = builder.calculateCartTotalTax();
+		builder.printExtendedTaxedPrice();		
+		System.out.println("Sales Taxes: " + f.format(totalTax));
+		System.out.println("Total:" + f.format(builder.calculateCartGrandTotal()));
 
 	}
 
